@@ -1,0 +1,20 @@
+﻿REFERENCE ASSEMBLY [System.Runtime.InteropServices.RuntimeInformation];
+REFERENCE ASSEMBLY [MongoDB.Driver.Core];
+REFERENCE ASSEMBLY [MongoDB.Driver];
+REFERENCE ASSEMBLY [MongoDB.Bson];
+
+@file = EXTRACT row string
+                FROM @"/gz/test{*}.gz"
+                USING Extractors.Text();
+               
+@output =
+    SELECT usqlInvestigation.USQLInvestigation.Append(row) AS row
+    FROM @file;
+
+
+
+OUTPUT @output
+TO "/output/output.txt"
+ORDER BY row
+//FETCH 500 ROWS
+USING Outputters.Text(quoting : false, delimiter : '|'); 
